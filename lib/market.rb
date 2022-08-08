@@ -56,14 +56,18 @@ class Market
     if qty > total_inventory[sale_item][:qty]
       false
     else
-      total_inventory[sale_item][:vendors].each do |vendor|
-        if vendor.inventory[sale_item] > qty
-          vendor.inventory[sale_item] -= qty
-          return true
-        elsif vendor.inventory[sale_item] < qty
-          qty -= vendor.inventory[sale_item]
-          vendor.inventory[sale_item] = 0
-        end
+      process_sale(sale_item, qty)
+    end
+  end
+
+  def process_sale(sale_item, qty)
+    total_inventory[sale_item][:vendors].each do |vendor|
+      if vendor.inventory[sale_item] > qty
+        vendor.inventory[sale_item] -= qty
+        return true
+      elsif vendor.inventory[sale_item] < qty
+        qty -= vendor.inventory[sale_item]
+        vendor.inventory[sale_item] = 0
       end
     end
   end
