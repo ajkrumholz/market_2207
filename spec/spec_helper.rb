@@ -1,6 +1,7 @@
 require './lib/item'
 require './lib/market'
 require './lib/vendor'
+require 'date'
 require 'simplecov'
 SimpleCov.start
 

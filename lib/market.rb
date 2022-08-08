@@ -1,11 +1,15 @@
+require 'date'
+
 class Market
 
   attr_reader :name,
-              :vendors
+              :vendors,
+              :date
 
   def initialize(name)
     @name = name
     @vendors = []
+    @date = Date.today.strftime("%d/%m/%Y")
   end
 
   def add_vendor(vendor)
@@ -30,14 +34,6 @@ class Market
     end.uniq.sort
   end
 
-  # def all_items
-  #   @vendors.flat_map do |vendor|
-  #     vendor.inventory.map do |item, qty|
-  #       item
-  #     end
-  #   end.uniq
-  # end
-
   def total_inventory
     total = Hash.new { |hash, item| hash[item] = {qty: 0, vendors: []} }
     @vendors.each do |vendor|
@@ -49,4 +45,29 @@ class Market
     total
   end
 
+  def overstocked_items
+    overstocks = []
+    total_inventory.each do |item, details|
+      if details[:vendors].size > 1 && details[:qty] > 50
+        overstocks << item
+      end
+    end
+    overstocks
+  end
+
+  def sell(sale_item, qty)
+    if qty > total_inventory[sale_item][:qty]
+      return false
+    else
+      total_inventory[sale_item][:vendors].each do |vendor|
+        if vendor.inventory[sale_item] > qty
+          vendor.inventory[sale_item] -= qty
+          return true
+        elsif vendor.inventory[sale_item] < qty
+          qty -= vendor.inventory[sale_item]
+          vendor.inventory[sale_item] = 0
+        end
+      end
+    end
+  end
 end
