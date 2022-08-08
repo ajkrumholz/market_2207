@@ -15,4 +15,13 @@ class Vendor
   def stock(item, qty)
     @inventory[item] += qty
   end
+
+  def potential_revenue
+    @inventory.sum do |item, qty|
+      price = item.price.scan(/[.0-9]/).join().to_f
+      price * qty
+    end
+  end
+
+  
 end
