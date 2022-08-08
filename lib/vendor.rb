@@ -1,5 +1,4 @@
 class Vendor
-
   attr_reader :name,
               :inventory
 
@@ -18,10 +17,8 @@ class Vendor
 
   def potential_revenue
     @inventory.sum do |item, qty|
-      price = item.price.scan(/[.0-9]/).join().to_f
+      price = item.price.scan(/[.0-9]/).join.to_f
       price * qty
     end
   end
-
-  
 end
